@@ -1,0 +1,703 @@
+USE [master]
+GO
+/****** Object:  Database [wizard_magazine]    Script Date: 5/31/2023 10:48:07 AM ******/
+/*CREATE DATABASE [wizard_magazine]
+ CONTAINMENT = NONE
+ ON  PRIMARY 
+( NAME = N'wizard_magazine', FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL16.MSSQLSERVER\MSSQL\DATA\wizard_magazine.mdf' , SIZE = 8192KB , MAXSIZE = UNLIMITED, FILEGROWTH = 65536KB )
+ LOG ON 
+( NAME = N'wizard_magazine_log', FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL16.MSSQLSERVER\MSSQL\DATA\wizard_magazine_log.ldf' , SIZE = 8192KB , MAXSIZE = 2048GB , FILEGROWTH = 65536KB )
+ WITH CATALOG_COLLATION = DATABASE_DEFAULT, LEDGER = OFF
+GO
+ALTER DATABASE [wizard_magazine] SET COMPATIBILITY_LEVEL = 160
+GO*/
+
+IF (1 = FULLTEXTSERVICEPROPERTY('IsFullTextInstalled'))
+begin
+EXEC [wizard_magazine].[dbo].[sp_fulltext_database] @action = 'enable'
+end
+GO
+ALTER DATABASE [wizard_magazine] SET ANSI_NULL_DEFAULT OFF 
+GO
+ALTER DATABASE [wizard_magazine] SET ANSI_NULLS OFF 
+GO
+ALTER DATABASE [wizard_magazine] SET ANSI_PADDING OFF 
+GO
+ALTER DATABASE [wizard_magazine] SET ANSI_WARNINGS OFF 
+GO
+ALTER DATABASE [wizard_magazine] SET ARITHABORT OFF 
+GO
+ALTER DATABASE [wizard_magazine] SET AUTO_CLOSE OFF 
+GO
+ALTER DATABASE [wizard_magazine] SET AUTO_SHRINK OFF 
+GO
+ALTER DATABASE [wizard_magazine] SET AUTO_UPDATE_STATISTICS ON 
+GO
+ALTER DATABASE [wizard_magazine] SET CURSOR_CLOSE_ON_COMMIT OFF 
+GO
+ALTER DATABASE [wizard_magazine] SET CURSOR_DEFAULT  GLOBAL 
+GO
+ALTER DATABASE [wizard_magazine] SET CONCAT_NULL_YIELDS_NULL OFF 
+GO
+ALTER DATABASE [wizard_magazine] SET NUMERIC_ROUNDABORT OFF 
+GO
+ALTER DATABASE [wizard_magazine] SET QUOTED_IDENTIFIER OFF 
+GO
+ALTER DATABASE [wizard_magazine] SET RECURSIVE_TRIGGERS OFF 
+GO
+ALTER DATABASE [wizard_magazine] SET  ENABLE_BROKER 
+GO
+ALTER DATABASE [wizard_magazine] SET AUTO_UPDATE_STATISTICS_ASYNC OFF 
+GO
+ALTER DATABASE [wizard_magazine] SET DATE_CORRELATION_OPTIMIZATION OFF 
+GO
+ALTER DATABASE [wizard_magazine] SET TRUSTWORTHY OFF 
+GO
+ALTER DATABASE [wizard_magazine] SET ALLOW_SNAPSHOT_ISOLATION OFF 
+GO
+ALTER DATABASE [wizard_magazine] SET PARAMETERIZATION SIMPLE 
+GO
+ALTER DATABASE [wizard_magazine] SET READ_COMMITTED_SNAPSHOT OFF 
+GO
+ALTER DATABASE [wizard_magazine] SET HONOR_BROKER_PRIORITY OFF 
+GO
+ALTER DATABASE [wizard_magazine] SET RECOVERY FULL 
+GO
+ALTER DATABASE [wizard_magazine] SET  MULTI_USER 
+GO
+ALTER DATABASE [wizard_magazine] SET PAGE_VERIFY CHECKSUM  
+GO
+ALTER DATABASE [wizard_magazine] SET DB_CHAINING OFF 
+GO
+ALTER DATABASE [wizard_magazine] SET FILESTREAM( NON_TRANSACTED_ACCESS = OFF ) 
+GO
+ALTER DATABASE [wizard_magazine] SET TARGET_RECOVERY_TIME = 60 SECONDS 
+GO
+ALTER DATABASE [wizard_magazine] SET DELAYED_DURABILITY = DISABLED 
+GO
+ALTER DATABASE [wizard_magazine] SET ACCELERATED_DATABASE_RECOVERY = OFF  
+GO
+EXEC sys.sp_db_vardecimal_storage_format N'wizard_magazine', N'ON'
+GO
+ALTER DATABASE [wizard_magazine] SET QUERY_STORE = ON
+GO
+ALTER DATABASE [wizard_magazine] SET QUERY_STORE (OPERATION_MODE = READ_WRITE, CLEANUP_POLICY = (STALE_QUERY_THRESHOLD_DAYS = 30), DATA_FLUSH_INTERVAL_SECONDS = 900, INTERVAL_LENGTH_MINUTES = 60, MAX_STORAGE_SIZE_MB = 1000, QUERY_CAPTURE_MODE = AUTO, SIZE_BASED_CLEANUP_MODE = AUTO, MAX_PLANS_PER_QUERY = 200, WAIT_STATS_CAPTURE_MODE = ON)
+GO
+USE [wizard_magazine]
+GO
+/****** Object:  Table [dbo].[accounts]    Script Date: 5/31/2023 10:48:07 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[accounts](
+	[user_id] [int] IDENTITY(1,1) NOT NULL,
+	[usename] [nvarchar](max) NULL,
+	[email] [nvarchar](256) NULL,
+	[password] [nvarchar](max) NULL,
+	[full_name] [nvarchar](max) NULL,
+	[avatar] [nvarchar](max) NULL,
+	[sefl_des] [nvarchar](max) NULL,
+ CONSTRAINT [PK_account] PRIMARY KEY CLUSTERED 
+(
+	[user_id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[articles](
+    [article_id] [int] IDENTITY(1,1) NOT NULL,
+    [title] [nvarchar](max) NULL,
+    [textbody] [nvarchar](max) NULL,
+    [create_time] [datetime] NULL,
+    [image] [nvarchar](max) NULL,
+    [user_id] [int] NULL,
+    [cate_id] [int] NULL,
+ CONSTRAINT [PK_articles] PRIMARY KEY CLUSTERED 
+(
+    [article_id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY];
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[categories](
+	[cate_id] [int] IDENTITY(1,1) NOT NULL,
+	[cate_name] [nvarchar](max) NULL,
+ CONSTRAINT [PK_categories] PRIMARY KEY CLUSTERED 
+(
+	[cate_id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[comments]    Script Date: 5/31/2023 10:48:07 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[comments](
+	[cmt_id] [int] IDENTITY(1,1) NOT NULL,
+	[user_id] [int] NULL,
+	[article_id] [int] NULL,
+	[cmt_cotnent] [nvarchar](max) NULL,
+	[create_time] [datetime] NULL,
+ CONSTRAINT [PK_comments] PRIMARY KEY CLUSTERED 
+(
+	[cmt_id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[users]    Script Date: 5/31/2023 10:48:07 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[users](
+	[user_id] [int] IDENTITY(1,1) NOT NULL,
+	[usename] [nvarchar](max) NULL,
+	[email] [nvarchar](256) NULL,
+	[password] [nvarchar](max) NULL,
+	[full_name] [nvarchar](max) NULL,
+	[avatar] [nvarchar](max) NULL,
+	[sefl_des] [nvarchar](max) NULL,
+ CONSTRAINT [PK_user] PRIMARY KEY CLUSTERED 
+(
+	[user_id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+SET IDENTITY_INSERT [dbo].[accounts] ON 
+
+INSERT [dbo].[accounts] ([user_id], [usename], [email], [password], [full_name], [avatar], [sefl_des]) VALUES (1, N'xxxx', N'xxxx@gmail.com', N'xxxx', N'xxxx', N'', N'G')
+INSERT [dbo].[accounts] ([user_id], [usename], [email], [password], [full_name], [avatar], [sefl_des]) VALUES (2, N'demo', N'demo@gmail.com', N'demo', N'demo', N'', N'G')
+SET IDENTITY_INSERT [dbo].[accounts] OFF
+GO
+SET IDENTITY_INSERT [dbo].[articles] ON 
+
+
+
+
+INSERT [dbo].[articles] ([article_id], [title], [textbody], [create_time], [image], [user_id], [cate_id]) VALUES (2,N'Những phát minh khoa học vĩ đại trong lịch sử', N'<p>Lịch sử khoa học và công nghệ chứng kiến nhiều phát minh vĩ đại, đóng góp to lớn vào sự phát triển của nhân loại.<br />
+Một trong những phát minh quan trọng nhất là động cơ hơi nước, được phát triển vào thế kỷ 18 bởi James Watt. Phát minh này không chỉ cách mạng hóa ngành công nghiệp mà còn đặt nền móng cho cuộc Cách mạng Công nghiệp.<br />
+Trong lĩnh vực y học, phát hiện ra penicillin của Alexander Fleming vào năm 1928 đã cứu sống hàng triệu người và mở ra kỷ nguyên mới cho ngành kháng sinh.<br />
+Bên cạnh đó, việc phát minh ra Internet vào cuối thế kỷ 20 đã thay đổi hoàn toàn cách thức giao tiếp và tiếp cận thông tin của con người.<br />
+Những phát minh này chỉ là một vài ví dụ tiêu biểu trong vô số các thành tựu khoa học và công nghệ đã định hình thế giới chúng ta ngày nay.<br />
+Các nhà khoa học và nhà phát minh đã không ngừng nỗ lực, sáng tạo và cống hiến để mang lại những tiến bộ vượt bậc cho xã hội. Những phát minh này không chỉ cải thiện chất lượng cuộc sống mà còn mở ra những chân trời mới cho tương lai.</p>
+', CAST(N'2024-06-17T19:23:00.000' AS DateTime), N'https://cms-i.autodaily.vn/wp-content/uploads/2013/10/14/RichardTrevithick_SteamEngi.jpg', 1, 6);
+
+INSERT [dbo].[articles] ([article_id], [title], [textbody], [create_time], [image], [user_id], [cate_id]) VALUES (1, N'Trần Hưng Đạo Và Chiến Thắng Vĩ Đại Trên Sông Bạch Đằng Năm 1288', 
+N'<p>Dòng sông Bạch Đằng lần thứ 3 đi vào sử sách chống giặc ngoại xâm của dân tộc ta với chiến tích thắng quân Nguyên Mông của Hưng Đạo vương Trần Quốc Tuấn năm 1288.</p>
+<p>Trần Quốc Tuấn sinh năm 1228, thuộc dòng dõi tôn thất nhà Trần. Suốt cuộc đời, ông hết lòng phụng sự cả 4 đời vua Trần thịnh trị. Ông là bậc tướng cột đá chống trời, hội tụ cả tài lẫn đức và trong cả ba lần đánh quân Nguyên Mông, Trần Quốc Tuấn đều lập công lớn, được sử sách ngợi ca.</p>
+<p>Trong trận chiến Bạch Đằng năm 1288, đích thân ông đã đặt chân đến vùng đất Tràng Kênh và các làng xã lân cận để bày trận đón đánh sự rút chạy của đội quân xâm lược Nguyên Mông, làm nên chiến thắng vĩ đại Bạch Đằng lần thứ 3 năm 1288.</p>
+<p><img src="https://haiphong.gov.vn/upload/haiphong/product/2020/12/su-kienls3-1-baba2bc19bd64fb99886130cde415ca0.png?maxwidth=1000" /></p>
+<p>Tháng 3/1288, biết được ý đồ rút quân bằng đường thuỷ qua sông Bạch Đằng của quân địch, Trần Quốc Tuấn đã chỉ huy quân dân Đại Việt chuẩn bị một trận địa mai phục lớn trên sông. Các loại gỗ lim, táu… đã được đốn ngã trên rừng kéo về bờ sông và được đẽo nhọn cắm xuống lòng các cửa sông dẫn ra biển làm thành những bãi chông lớn.</p>
+<p>Các cánh quân thuỷ bộ bí mật mai phục sau dãy núi đá Tràng Kênh dọc bờ sông Bạch Đằng. Sáng ngày 9/4/1288, khi đoàn thuyền của Ô Mã Nhi tiến vào sông Bạch Đằng nhân lúc nước lớn, thủy quân nhà Trần tràn ra giao chiến, rồi giả thua bỏ chạy. Trúng kế, thuyền giặc di chuyển vào sâu bên trong sông Bạch Đằng, tiến vào bãi cọc.</p>
+<p>Quân ta đợi cho thủy triều xuống mới quay thuyền lại và đánh thẳng vào đội hình địch. Thủy quân Đại Việt từ các hướng nhanh chóng tiến ra sông Bạch Đằng, với hàng trăm chiến thuyền cùng quân lính tạo thành một dải thuyền chặn đầu thuyền địch ngang trên sông.</p>
+<p><img src="https://haiphong.gov.vn/upload/haiphong/product/2020/12/su-kienls3-2-7e0eb7e63e8f4d79b197774916c0422b.png?maxwidth=1000" /></p>
+<p>Quân Nguyên Mông bị mắc kẹt, tổn thất nặng nề, nhiều chiến thuyền bị cháy rụi và đâm phải cọc nhọn. Một số cánh quân Nguyên bỏ thuyền chạy lên bờ sông để tìm đường trốn chạy nhưng đều rơi vào ổ phục kích của quân nhà Trần, bị chặn đánh kịch liệt. Chỉ trong vòng 1 ngày, hơn 600 chiến thuyền và khoảng 6 vạn quân địch đã bị tiêu diệt hoàn toàn. Quân dân nhà Trần đại thắng.</p>
+<p>Chiến thắng Bạch Đằng năm 1288 là đỉnh cao chói lọi của sức mạnh và nghệ thuật quân sự của quân dân Đại Việt thế kỷ thứ 13, thể hiện tài thao lược của Hưng Đạo Đại Vương Trần Quốc Tuấn - vị anh hùng kiệt xuất, nhà chiến lược lỗi lạc của dân tộc ta. Ông không chỉ được nhân dân Việt Nam tôn thờ như một bậc thánh nhân mà còn được thế giới công nhận là một trong mười vị tướng giỏi nhất mọi thời đại.</p>
+<p><img src="https://haiphong.gov.vn/upload/haiphong/product/2020/12/DJI_0039-661060ce83be480a8c900e818d03093e.jpg?maxwidth=1000" /></p>
+<p>Ngày nay, trên sông Bạch Đằng lịch sử, ngay tại cửa sông Thải chảy ra sông Bạch Đằng có một vùng đất non nước hữu tình, nơi tọa lạc của Khu di tích Bạch Đằng Giang, một tượng đài lưu niệm, tưởng niệm về ba lần chiến thắng quân xâm lược trên sông Bạch Đằng, đồng thời cũng là công trình thể hiện sự tri ân của hậu thế đối với các tiền nhân và các vị anh hùng dân tộc: Đức vua Ngô Quyền, Hoàng đế Lê Đại Hành, Hưng Đạo Đại Vương Trần Quốc Tuấn, Chủ tịch Hồ Chí Minh, đã có công lao to lớn với đất nước, với nhân dân.</p>
+<p>Khu di tích Bạch Đằng Giang, vùng đất địa linh, điểm kết nối giữa quá khứ hào hùng của dân tộc với hiện tại thành phố Hải Phòng đang trên đà phát triển vươn ra biển lớn, khích lệ, cổ vũ chúng ta vững bước xây dựng Hải Phòng phát triển ngày càng văn minh, hiện đại./.</p>'
+, 
+CAST(N'2024-06-29T19:23:00.000' AS DateTime), 
+N'http://hoangthanhthanglong.com/store/uploads/2020/09/800-800x500.jpg', 
+1, 
+1);
+
+INSERT [dbo].[articles] ([article_id], [title], [textbody], [create_time], [image], [user_id], [cate_id]) VALUES (3,N'Cách mạng Tháng Tám - Mốc son vĩ đại của lịch sử dân tộc',N'<p><strong><em>Trong sự nghiệp giải phóng dân tộc Việt Nam, chúng ta có thể tự hào và khẳng định rằng, thắng lợi của Cách mạng tháng Tám năm 1945 là một cuộc cách mạng vĩ đại nhất. Vĩ đại ở chỗ, cách mạng thành công đã đưa dân tộc ta từ thân phận nô lệ trở thành dân tộc độc lập, đưa đất nước ta bước vào một kỷ nguyên mới: kỷ nguyên độc lập, tự do và đi lên chủ nghĩa xã hội. Nước Việt Nam dân chủ cộng hòa ra đời, được đánh dấu bằng bản Tuyên ngôn Độc lập do Bác Hồ, thay mặt Chính phủ lâm thời đọc tại quảng trường Ba Đình, Hà Nội ngày 2/9/1945. Trải qua hàng nghìn năm lịch sử dựng nước và giữ nước, dân tộc Việt Nam đã viết nên những trang sử vẻ vang với bao chiến công hiển hách. Trong đó, Cách mạng tháng Tám năm 1945 được coi là một trong những mốc son chói lọi nhất, bản anh hùng ca vĩ đại của lịch sử dân tộc thế kỷ XX, là kết quả của quá trình đấu tranh lâu dài, kiên cường, bất khuất của Nhân dân Việt Nam dưới sự lãnh đạo sáng suốt và đúng đắn, đầy sáng tạo của Đảng Cộng sản Việt Nam.</em></strong></p>
+<p><strong>Bối cảnh lịch sử và diễn biến</strong></p>
+<p>Đầu năm 1945, Chiến tranh thế giới lần thứ hai bước vào giai đoạn cuối. Hồng quân Xô Viết liên tiếp giành thắng lợi quyết định trên chiến trường châu Âu, giải phóng một loạt nước và tiến thẳng vào sào huyệt phát xít Đức tại Béc-lin. Ngày 09/5/1945, phát xít Đức đầu hàng vô điều kiện, chiến tranh kết thúc ở châu Âu. Ngày 08/8/1945, Hồng quân Liên Xô tiến công như vũ bão vào quân đội Nhật. Ngày 14/8/1945, phát xít Nhật đầu hàng vô điều kiện, chiến tranh thế giới lần thứ hai kết thúc. Theo thỏa thuận của các nước Đồng minh, sau khi phát xít Nhật đầu hàng, quân đội Anh và Tưởng sẽ vào Đông Dương để giải giáp quân đội Nhật. Trong khi đó, thực dân Pháp lăm le dựa vào Đồng minh hòng khôi phục địa vị thống trị của mình; đế quốc Mỹ đứng sau các thế lực này cũng sẵn sàng can thiệp vào Đông Dương; những phần tử phản động, ngoan cố trong chính quyền tay sai Nhật đang âm mưu thay thầy đổi chủ, chống lại cách mạng.</p>
+<p>Trải qua các cuộc diễn tập, đến năm 1945, phong trào cách mạng dâng cao. Ngày 09/3/1945, phát xít Nhật làm cuộc đảo chính hất cẳng Pháp. Ngay trong đêm đó, Hội nghị Ban Thường vụ Trung ương mở rộng quyết định phát động một cao trào cách mạng làm tiền đề cho tổng khởi nghĩa, thay đổi các hình thức tuyên truyền, cổ động, tổ chức và đấu tranh cho thích hợp. Tháng 3/1945, Trung ương Đảng ra Chỉ thị “Nhật - Pháp bắn nhau và hành động của chúng ta”. Tháng 4/1945, Trung ương triệu tập Hội nghị quân sự cách mạng Bắc Kỳ, quyết định nhiều vấn đề quan trọng, thống nhất các lực lượng vũ trang thành Việt Nam giải phóng quân. Ngày 16/4/1945, Tổng bộ Việt Minh ra Chỉ thị tổ chức các Ủy ban Dân tộc giải phóng các cấp và chuẩn bị thành lập Ủy ban giải phóng dân tộc Việt Nam, tức Chính phủ lâm thời cách mạng Việt Nam.</p>
+<p><img src="https://quansu.haiphong.gov.vn/upload/quansu/product/2023/8/japanese-soldier-confronted-by-french-civilians_1945-7d5a366ff78847d48b4c0c1311ef45e6.jpg?maxwidth=2048" /></p>
+<p><em>Nhật đảo chính Pháp tại Việt Nam năm 1945</em></p>
+<p>Từ tháng 4/1945 trở đi, cao trào kháng Nhật cứu nước diễn ra mạnh mẽ, phong phú về nội dung và hình thức. Đầu tháng 5/1945, Bác Hồ từ Cao Bằng về Tuyên Quang, chọn Tân Trào làm căn cứ chỉ đạo cách mạng cả nước và 3 chuẩn bị Đại hội quốc dân. Ngày 04/6/1945, Khu giải phóng Việt Bắc được thành lập, đặt dưới sự lãnh đạo của Ủy ban chỉ huy lâm thời, trở thành căn cứ địa của cả nước. Tháng 8/1945, Hội nghị đại biểu toàn quốc của Đảng họp tại Tân Trào (Tuyên Quang) khẳng định: “Cơ hội rất tốt cho ta giành độc lập đã tới” và quyết định phát động toàn dân khởi nghĩa giành chính quyền từ tay phát xít Nhật và tay sai trước khi quân Đồng minh vào Đông Dương; đề ra ba nguyên tắc bảo đảm tổng khởi nghĩa thắng lợi, đó là: tập trung, thống nhất, kịp thời. 23 giờ ngày 13/8/1945, Ủy ban Khởi nghĩa ra Quân lệnh số 1 hiệu triệu toàn dân tổng khởi nghĩa.</p>
+<p>Ngày 16/8/1945, Đại hội Quốc dân họp tại Tân trào thông qua “10 chính sách lớn của Việt Minh”; thông qua “Lệnh tổng khởi nghĩa”; quy định quốc kỳ, quốc ca; thành lập Ủy ban Dân tộc giải phóng Trung ương, tức Chính phủ Lâm thời do đồng chí Hồ Chí Minh làm Chủ tịch. Chủ tịch Hồ Chí Minh gửi thư kêu gọi nhân dân cả nước tổng khởi nghĩa, trong đó chỉ rõ: “Giờ quyết định cho vận mệnh dân tộc ta đã đến. Toàn quốc đồng bào hãy đứng dậy đem sức ta mà tự giải phóng cho ta”. Dưới sự lãnh đạo của Đảng và Chủ tịch Hồ Chí Minh, nhân dân cả nước đồng loạt vùng dậy, tiến hành tổng khởi nghĩa, giành chính quyền. Từ ngày 14 đến ngày 18/8, cuộc tổng khởi nghĩa nổ ra giành được thắng lợi ở nông thôn đồng bằng Bắc Bộ, đại bộ phận miền Trung, một phần miền Nam và ở các thị xã: Bắc Giang, Hải Dương, Hà Tĩnh, Hội An, Quảng Nam...</p>
+<p><img src="https://quansu.haiphong.gov.vn/upload/quansu/product/2023/8/chien_khu_xua_1-2037a299c6094b729fe76a814b92f1d7.jpg?maxwidth=2048" /></p>
+<p><em>Quốc dân Đại hội Tân Trào ngày 16/8/1945</em></p>
+<p>Ngày 19/8, khởi nghĩa giành chính quyền thắng lợi ở Hà Nội. Ngày 23/8, khởi nghĩa thắng lợi ở Huế và ở Bắc Cạn, Hòa Bình, Hải Phòng, Hà Đông, Quảng Bình, Quảng Trị, Bình Định, Gia Lai, Bạc Liêu... Ngày 25/8, khởi nghĩa thắng lợi ở Sài Gòn - Gia Định, Kon Tum, Sóc Trăng, Vĩnh Long, Trà Vinh, Biên Hòa, Tây Ninh, Bến Tre... Ở Côn Đảo, Đảng bộ nhà tù Côn Đảo đã lãnh đạo các chiến sĩ cách mạng bị giam cầm nổi dậy giành chính quyền. Chỉ trong vòng 15 ngày cuối tháng 8/1945, cuộc tổng khởi nghĩa đã giành thắng lợi hoàn toàn, chính quyền trong cả nước về tay nhân dân.</p>
+<p> Ngày 02/9/1945, tại Quảng trường Ba Đình (Hà Nội) lịnh sử, trước cuộc mít tinh của gần một triệu đồng bào, Chủ tịch Hồ Chí Minh thay mặt Chính phủ Lâm thời trịnh trọng đọc bản Tuyên ngôn Độc lập, tuyên bố trước quốc dân và thế giới: Nước Việt Nam Dân chủ Cộng hòa ra đời (nay là Cộng hòa xã hội chủ nghĩa Việt Nam). Từ đó, ngày 2/9 là Ngày Quốc khánh của nước ta.</p>
+<p><img src="https://quansu.haiphong.gov.vn/upload/quansu/product/2023/8/maxresdefault-c815587eb54a4157b471f47811ba36b6.jpg?maxwidth=2048" /></p>
+<p><em>Chủ tịch Hồ Chí Minh đọc bản Tuyên ngôn độc lập, khai sinh nước Việt Nam Dân chủ Cộng hòa</em></p>
+<p>Diễn biến của Cách mạng Tháng Tám ở Hải Phòng</p>
+<p>Sau ngày Nhật đảo chính Pháp (ngày 09/3/1945), Ban lãnh đạo Việt Minh Hải Phòng, Kiến An chỉ đạo các địa phương thành lập các Đội vũ trang tuyên truyền xung phong. Tháng 4/1945, tại Trại Lẻ, làng Dư Hàng, Hội nghị cán bộ Hải Phòng và Kiến An họp bàn triển khai Chỉ thị: “Nhật - Pháp bắn nhau và hành động của chúng ta” của Ban Thường vụ Trung ương Đảng. Hội nghị quyết định: Phát động phong trào mua sắm vũ khí; mở rộng và phát triển các đội tự vệ cứu quốc; chống Nhật bắt lính, thu thóc, thu thuế; mở rộng các hình thức đấu tranh, trừng trị những tên đầu sỏ làm tay sai cho Nhật.</p>
+<p>Trên cơ sở lực lượng chính trị quần chúng phát triển mạnh, lực lượng bán vũ trang được hình thành ở khắp các làng, xã, khu phố, nhà máy, xí nghiệp. Ở nội thành, các đội tự vệ bí mật trong công nhân được thành lập, ở các nhà máy Xi măng, Hỏa xa, Carông và các khu Thượng Lý, Lạc Viên... Ở vùng nông thôn Thủy Nguyên, Kiến Thụy, Tiên Lãng, An Dương, Hải An, Cát Bà, Cát Hải, các Đội tự vệ cứu quốc được tăng cường. Các huyện Thủy Nguyên, Kiến Thụy, An Lão đã tổ chức được lực lượng tự vệ tập trung khá mạnh, có từ 2 đến 3 trung đội. Đội vũ trang Tuyên truyền xung phong của tỉnh Kiến An, do đồng chí Trần Các, Trần Viết Diệu (An Ngảnh) phụ trách, mở rộng hoạt động trên phạm vi toàn tỉnh với phương châm “Chính trị trọng hơn quân sự”. Đội đã công khai diễn thuyết, kêu gọi nhân dân hưởng ứng lời hiệu triệu của Mặt trận ở chợ Quế Lâm, Tác Giang, làng Lão Phong (Kiến Thụy); chợ Đôi, chợ Vượn, Việt Minh, cùng nhau đứng lên chống lại ách áp bức của thực dân, phong kiến chợ Chùa, chợ Đầm (Tiên Lãng); vùng Thượng huyện, Hà Phú, chợ Tổng (Thủy Nguyên)... nhiều lần Đội đã biến hội nghị của tổ chức Thanh niên Đại Việt do Nhật lập ra ở trường học Cổ Trai (Kiến Thuỵ), trường Kiêm bị (Tiên Lãng), trường Tiểu học Đồng Giới (An Dương)... thành diễn đàn vạch tội ác và thủ đoạn lừa bịp của phát-xít Nhật. Ở một số nơi, Đội tiến hành cảnh cáo, trừng trị những tên tay sai cho địch có nợ máu với nhân dân. Tại các huyện, Việt Minh trực tiếp chỉ đạo tự vệ đẩy mạnh hoạt động, hỗ trợ cho nhân dân đấu tranh không cho chức dịch làng xã thu thuế cho Nhật; phá kho thóc giải quyết nạn đói, quyên góp gạo nấu cháo cứu đói, tước khí giới của địch. Ngày 11/7/1945, tự vệ Kiến Thụy tập kích đồn Đoan ở Tiểu Bàng. Tự vệ Thượng huyện Thủy Nguyên, có sự hỗ trợ của giải phóng quân Chiến khu Đông Triều, đột nhập tước vũ khí của binh lính tại huyện đường. Tự vệ Hải Phòng triển khai kế hoạch đối phó nếu tàn quân Pháp âm mưu đổ bộ vào thành phố khi Nhật đầu hàng. Tự vệ công nhân Hoả Xa (ga Hải Phòng) bao vây, tước vũ khí của quân Pháp và làm chủ nhà ga. Tiêu biểu là cuộc chiến đấu chống Nhật khủng bố, bảo vệ chính quyền cách mạng Kim Sơn, của tự vệ và nhân dân Kiến Thuỵ. </p>
+<p>Ngày 12/7/1945, chính quyền cách mạng lâm thời làng Kim Sơn được thành lập. Ngày 04//8/1945, Nhật đưa quân về khủng bố. Đoán trước được âm mưu của địch, Ban lãnh đạo Việt Minh tỉnh và huyện đã bố trí lực lượng tự vệ triển khai các phương án sẵn sàng chiến đấu. Giặc Nhật chia làm hai mũi tiến vào Kim Sơn. Du kích và nhân dân Kiến Thụy, có du kích của một số xã thuộc huyện Tiên Lãng tiếp sức, đã anh dũng chiến đấu buộc quân Nhật phải rút lui. Trên đường rút quân, chúng còn bị du kích ta chặn đánh ở Nhân Trai, Xâm Linh, Cổ Trai, Xuân La, Cống Đôi, Cầu Đen. Sự kiện thành lập Ủy ban dân tộc giải phóng làng Kim Sơn và chiến đấu chống Nhật khủng bố thắng lợi đánh dấu bước phát triển mới của phong trào cách mạng địa phương trong thời kỳ tiền khởi nghĩa.</p>
+<p>Từ giữa tháng 8/1945, khởi nghĩa giành chính quyền liên tiếp nổ ra tại các làng, xã, huyện tiến tới Tổng khởi nghĩa trên địa bàn toàn tỉnh và thành phố.  Tự vệ là lực lượng nòng cốt cho toàn dân nổi dậy giành chính quyền. Du kích Kiến Thuỵ xuất phát từ Kim Sơn, vượt đêm tối, mưa to để sáng sớm ngày 15 tháng 8 đột nhập chiếm phủ đường. Du kích Tiên Lãng, có sự hỗ trợ của du kích Kiến Thuỵ, kéo về huyện lỵ giành chính quyền (ngày 16 tháng 8). Đêm 16 rạng 17/8/1945, du kích Câu Trung (An Lão) đột nhập tước vũ khí của lính bảo an làm chủ huyện đường. Ngày hôm sau, một tiểu đội vượt sông sang tịch thu khí giới của lính lệ ở huyện đường An Dương. Ngày 21/8/1945, du kích Lương Khê, Cam Lộ, An Lạc hỗ trợ quần chúng mít tinh, lập chính quyền cách mạng của huyện. Việt Minh và du kích Vĩnh Bảo chia làm 2 mũi về chiếm huyện đường, giành chính quyền (ngày 20/8/1945). Sáng ngày 21 tháng 8, Việt Minh huyện An Lão lãnh đạo du kích, quần chúng trung kiên chia thành 3 mũi tiến về tỉnh lỵ Kiến An, phối hợp với nhân mối, tước vũ khí của binh lính địch ở trại Bảo An binh, thu 62 khẩu súng, chiếm Bưu điện, cắt đường dây liên lạc, đột nhập dinh Tỉnh trưởng, thu con dấu và giấy tờ cần thiết rồi rút về căn cứ. Ngày hôm sau, Ban khởi nghĩa tỉnh huy động lực lượng du kích huyện Kiến Thuỵ, Tiên Lãng, An Dương tiến về tỉnh lỵ giành chính quyền. Chiều hôm đó, đông đảo du kích và quần chúng tuần hành, biểu dương lực lượng trên các đường phố.</p>
+<p><img src="https://quansu.haiphong.gov.vn/upload/quansu/product/2023/8/HPgianhchinhquyen238456371-1-3541cb9356d040a6a3463c00ca3c1f70.jpg?maxwidth=2048" /></p>
+<p>Trong những ngày này, Thành bộ Việt Minh Hải Phòng lãnh đạo nhân dân thành phố khẩn trương chuẩn bị cho khởi nghĩa. Tại các nhà máy, công nhân tự rèn sắm, trang bị vũ khí. Ủy ban khởi nghĩa giao nhiệm vụ cho tự vệ tước khí giới địch ở nhà Đoan và Sở Mật thám để thăm dò thái độ của quân đội Nhật. Cuộc thương nghị giữa cán bộ Việt Minh với Thị trưởng thành phố, với đại diện quân Nhật diễn ra thuận lợi. Viên chỉ huy quân Nhật cam kết không dùng vũ lực gây trở ngại trong ngày khởi nghĩa. Sáng ngày 23 tháng 8, lực lượng vũ trang Chiến khu Đông Triều cùng đông đảo nhân dân, tự vệ các huyện của tỉnh Kiến An và Hải Phòng kéo về quảng trường Nhà hát thành phố mít tinh khởi nghĩa giành chính quyền. Các chiến sĩ Chiến khu Đông Triều, tự vệ thành phố, tự vệ tỉnh Kiến An nai nịt gọn gàng, hàng ngũ chỉnh tề xếp thành từng khối trên Quảng trường. Đồng chí Vũ Quốc Uy thay mặt Ủy ban khởi nghĩa tuyên bố xoá bỏ chính quyền cũ. Ủy ban cách mạng lâm thời thành phố ra mắt trong tiếng hò reo vang dậy của dân chúng. Sau đó, tự vệ và nhân dân diễu hành biểu dương lực lượng trên các đường phố lớn, toả đi chiếm giữ các vị trí quan trọng: Toà Thị chính, nhà Ga, Sở Hiến binh, Ty Liêm phóng, Bưu điện, nhà Băng, nhà máy Điện, nhà máy Xi măng, Cảng; phá các trại giam, thả tù chính trị.</p>
+<p>Trong vòng một tuần lễ, dưới sự lãnh đạo của tổ chức Đảng, tự vệ các địa phương đã hỗ trợ quần chúng tiến hành Tổng khởi nghĩa thắng lợi từ thành phố, tỉnh đến các huyện, làng xã. Ủy ban Cách mạng lâm thời các cấp đều có một ủy viên phụ trách quân sự, đó là một vị trí quan trọng, có nhiệm vụ hết sức nặng nề là xây dựng lực lượng vũ trang, trấn áp bọn phản cách mạng, bảo vệ chính quyền và chế độ mới. </p>
+<p>Trong thời kỳ hoạt động bí mật (1930-1945), Đảng bộ Hải Phòng, Kiến An luôn coi trọng xây dựng lực lượng bán vũ trang nhằm hỗ trợ phong trào đấu tranh, xây dựng và phát triển tổ chức Đảng, cơ sở cách mạng. Từ các đội Xích vệ, tự vệ cứu quốc được tổ chức gọn, bí mật tiến tới lực lượng tự vệ được trang bị vũ khí, từng bước hoạt động công khai, là một quá trình phát triển dưới sự chỉ đạo trực tiếp của Đảng. Tự vệ vũ trang là một lực lượng cách mạng, đấu tranh vũ trang là một phương thức tiến hành cách mạng, được kết hợp chặt chẽ với lực lượng chính trị quần chúng để làm nên thắng lợi của cuộc Tổng khởi nghĩa tháng 8/1945. Những kết quả đã đạt được trong 15 năm vận động cách mạng là cơ sở cho việc xây dựng và phát triển lực lượng vũ trang địa phương Hải Phòng sau này.</p>
+<p>Nguyên nhân thắng lợi và ý nghĩa lịch sử</p>
+<p>Cách mạng Tháng Tám năm 1945 thành công mau lẹ do nhiều nguyên nhân, trong đó nguyên nhân quan trọng, có ý nghĩa quyết định là sự lãnh đạo đúng đắn, sáng suốt, khéo léo của Đảng; là sự vận dụng và phát triển chủ nghĩa Mác - Lênin trong điều kiện cụ thể của nước ta một cách đúng đắn, độc lập, tự chủ và sáng tạo. Đảng có phương pháp, chiến lược, chiến thuật cách mạng phù hợp, linh hoạt; nhận thức được thời cơ, chủ động đón thời cơ và kiên quyết chớp thời cơ, tiến hành tổng khởi nghĩa giành chính quyền trong cả nước.</p>
+<p>Cách mạng Tháng Tám thành công là do tinh thần yêu nước, đoàn kết, ý chí quật cường của các tầng lớp nhân dân ta, không chịu sống mãi kiếp nô lệ của người dân mất nước; một lòng đi theo Đảng và được Đảng lãnh đạo qua các cuộc tổng diễn tập, đã quyết vùng lên giành độc lập cho dân tộc. Trải qua 15 năm đấu tranh cực kỳ gian khổ và anh dũng dưới sự lãnh đạo của Đảng, đã có biết bao đồng 7 bào, chiến sĩ đã không hề tiếc máu xương, hy sinh oanh liệt vì mục tiêu độc lập dân tộc.</p>
+<p><img src="https://quansu.haiphong.gov.vn/upload/quansu/product/2023/8/1_638263080831680930-b5ba73a6b9e74a7180cc8fa1e5fce438.png?maxwidth=2048" /></p>
+<p>Cách mạng Tháng Tám được tiến hành trong bối cảnh quốc tế có những thuận lợi nhất định. Chủ nghĩa phát xít Đức, Ý, Nhật đã bị đánh bại, phong trào đấu tranh giải phóng của các dân tộc bị áp bức và của các lực lượng tiến bộ trên thế giới phát triển mạnh.</p>
+<p>Cách mạng Tháng Tám năm 1945 thành công là thắng lợi vĩ đại đầu tiên của nhân dân ta từ khi có Đảng lãnh đạo, mở ra bước ngoặt vĩ đại trong lịch sử dân tộc Việt Nam. Chính quyền về tay nhân dân, nước Việt Nam Dân chủ Cộng hòa ra đời - Nhà nước công nông đầu tiên ở Đông Nam Á; chấm dứt chế độ quân chủ phong kiến ở Việt Nam; kết thúc hơn hơn 80 năm nhân dân ta dưới ách đô hộ của thực dân, phát xít. Nhân dân Việt Nam từ thân phận nô lệ trở thành người dân một nước độc lập, làm chủ vận mệnh của mình. Nước Việt Nam từ một nước thuộc địa nửa phong kiến trở thành một nước độc lập, tự do và dân chủ. Đảng Cộng sản Việt Nam trở thành một Đảng cầm quyền. Từ đây, đất nước, xã hội, dân tộc và con người Việt Nam bước vào kỷ nguyên mới, kỷ nguyên độc lập dân tộc gắn liền với chủ nghĩa xã hội.</p>
+<p>Cách mạng Tháng Tám là thắng lợi của chủ nghĩa Mác-Lênin được vận dụng sáng tạo vào hoàn cảnh cụ thể của cách mạng Việt Nam; là thắng lợi của tư tưởng Hồ Chí Minh và đường lối cách mạng của Đảng ta gắn độc lập dân tộc với chủ nghĩa xã hội, gắn sức mạnh dân tộc với sức mạnh thời đại; là sự thể nghiệm thành công đầu tiên chủ nghĩa Mác-Lênin tại một nước thuộc địa ở châu Á. Đây còn là quá trình phát triển tất yếu của lịch sử dân tộc trải qua mấy nghìn năm phấn đấu, đỉnh cao của ý chí quật cường, sức mạnh cố kết cộng đồng, tầm cao trí tuệ của dân tộc hòa quyện với chủ nghĩa Mác-Lênin, tư tưởng Hồ Chí Minh với xu thế của thời đại vì hòa bình, dân chủ và tiến bộ xã hội, vì độc lập dân tộc và chủ nghĩa xã hội. - Thắng lợi của Cách mạng Tháng Tám cổ vũ phong trào đấu tranh giải phóng dân tộc ở các nước bị chủ nghĩa đế quốc thực dân áp bức, thống trị. Nó khẳng định rằng, trong điều kiện trào lưu của cách mạng vô sản, cuộc cách mạng do một đảng của giai cấp công nhân lãnh đạo không chỉ có thể thành công ở một nước tư bản kém phát triển, nơi mắt xích yếu nhất của chủ nghĩa đế quốc mà còn 8 có thể thành công ở ngay một nước thuộc địa nửa phong kiến lạc hậu để đưa cả dân tộc đó đi lên theo con đường của chủ nghĩa xã hội.</p>
+<p>Ngày nay, trong quá trình phát triển đất nước, bài học ấy tiếp tục được Đảng ta vận dụng, tại Văn kiện Đại hội XIII, Đảng ta khẳng định: “Tư tưởng chỉ đạo xuyên suốt của toàn Đảng, toàn dân và toàn quân ta là phải kiên định và vận dụng, phát triển sáng tạo chủ nghĩa Mác - Lênin, tư tưởng Hồ Chí Minh; kiên định mục tiêu độc lập dân tộc và chủ nghĩa xã hội; kiên định đường lối đổi mới của Đảng; kiên định các nguyên tắc xây dựng Đảng; bảo đảm cao nhất lợi ích quốc gia - dân tộc trên cơ sở các nguyên tắc cơ bản của luật pháp quốc tế, bình đẳng, hợp tác, cùng có lợi, để xây dựng và bảo vệ vững chắc Tổ quốc Việt Nam xã hội chủ nghĩa. Đây là vấn đề mang tính nguyên tắc, có ý nghĩa sống còn đối với chế độ ta, là nền tảng vững chắc của Đảng ta, không cho phép ai được ngả nghiêng, dao động”./.</p>
+',
+CAST(N'2024-06-29T19:23:00.000' AS DateTime), 
+N'https://quansu.haiphong.gov.vn/upload/quansu/product/2023/08-2023/Cach-mang-Thang-Tam---Moc-son-vi-dai-cua-127134-638278565741930281.jpeg', 
+1, 
+1);
+
+
+INSERT [dbo].[articles] ([article_id], [title], [textbody], [create_time], [image], [user_id], [cate_id]) VALUES (4, N'Hồ Chí Minh: Lãnh Tụ Vĩ Đại Của Dân Tộc Việt Nam', 
+N'<p>Dòng sông Bạch Đằng lần thứ 3 đi vào sử sách chống giặc ngoại xâm của dân tộc ta với chiến tích thắng quân Nguyên Mông của Hưng Đạo vương Trần Quốc Tuấn năm 1288.</p>
+<p><img src="https://www.ttn.edu.vn/images/DoanTN/2020.5.19%20Chu%20tich%20HCM%20ca%20doi%20vi%20nuoc%20vi%20dan.jpg" /></p>
+<p>Đối với nhân dân và bạn bè trên thế giới, Chủ tịch Hồ Chí Minh là lãnh tụ kiệt xuất, người chiến sĩ cộng sản lỗi lạc, người đồng chí, người thầy kính yêu, người bạn thân thiết. Cảm phục những cống hiến vĩ đại cho dân tộc, cho nhân loại và tấm gương đạo đức cao đẹp, nhân dân và bạn bè trên thế giới đã ca ngợi Người với những lời tốt đẹp nhất.</p>
+<p><img src="https://www.ttn.edu.vn/images/DoanTN/2020.5.19%20Chu%20tich%20HCM%20trong%20long%20ban%20be%20Quoc%20te.jpg" /></p>'
+, 
+CAST(N'2024-06-29T19:23:00.000' AS DateTime), 
+N'http://hoangthanhthanglong.com/store/uploads/2020/09/800-800x500.jpg', 
+1, 
+1);
+
+
+INSERT [dbo].[articles] ([article_id], [title], [textbody], [create_time], [image], [user_id], [cate_id]) VALUES (5, N'Khám Phá Thánh Địa Mỹ Sơn: Di Sản Văn Hóa Thế Giới', 
+N'<p>Mang ý nghĩa và giá trị lịch sử to lớn, Khu di tích đền tháp Mỹ Sơn có một vị trí rất quan trọng trong nền văn hóa nghệ thuật của vùng Đông Nam Á. Trước những giá trị nổi bật toàn cầu của một di sản văn hóa cần phải được bảo vệ vì lợi ích của cả nhân loại, ngày 4/12/1999, Di tích này được Uỷ ban Văn hoá Khoa học Giáo dục Liên hiệp quốc (UNESCO) công nhận là di sản văn hoá thế giới.</p>
+<p>Khu di tích Mỹ Sơn thuộc địa phận xã Duy Phú, huyện Duy Xuyên, tỉnh Quảng Nam, cách thành phố Đà Nẵng khoảng 70 km về hướng tây nam. Di tích tọa lạc trong một thung lũng kín có địa thế núi non hùng vĩ, thâm nghiêm ở tỉnh Quảng Nam, được khởi công từ thế kỷ IV bởi vị vua Bhadravarman (trị vì từ năm 349 đến năm 361) và kết thúc vào cuối thế kỷ thứ XIII, đầu thế kỷ XIV dưới triều vua Jaya Simhavarman III (Chế Mân). </p>
+<p><img src="https://file1.dangcongsan.vn/data/0/images/2023/05/11/upload_92/a2.jpg?dpi=150&quality=100&w=780" /></p>
+<p>Nơi đây, 70 công trình đền tháp kết tinh giá trị lịch sử, văn hóa, kiến trúc, nghệ thuật của nền văn minh Chămpa, được đánh giá ngang hàng với các di tích nổi tiếng trong khu vực Đông Nam Á như Borobudur (Indonesia), Pagan (Myanmar), Angkor Wat (Campuchia), là kết tinh của những giá trị về lịch sử, văn hóa, kiến trúc, nghệ thuật được tạo lập trong suốt chiều dài 9 thế kỷ (từ thế kỷ thứ IV đến thế kỷ XIII). Mặc dù bị thời gian và chiến tranh tàn phá nặng nề, nhưng những gì còn lại ở Mỹ Sơn vẫn đóng một vai trò cực kỳ quan trọng trong di sản lịch sử văn hóa kiến trúc nghệ thuật thế giới.</p>
+<p>Với lịch sử xây dựng và phát triển liên tục qua nhiều thế kỷ, các đền tháp thể hiện sự đa dạng các phong cách kiến trúc nhưng nhìn chung đều ở tư thế cao vút biểu trưng cho sự vĩ đại và thanh khiết của ngọn núi Mêra, nơi cư ngụ của các vị thần và là trung tâm của vũ trụ. Những di tích của khu đền tháp Mỹ Sơn là những công trình quan trọng nhất của nền văn hóa Chămpa. Hầu hết các công trình được kết cấu bằng gạch nung với trụ đá và trang trí những phù điêu sa thạch thể hiện các giai thoại Ấn Độ. Minh chứng kỹ thuật của đền tháp là sự hiện hữu của các kỹ xảo Chăm trong khi sự biểu trưng của các họa tiết và biểu tượng của đền tháp ẩn chứa trong đó nội dung các giai đoạn chính trị và tôn giáo Chămpa.</p>
+<p>Trong số các dạng kiến trúc tháp Chăm, kiến trúc dạng quần thể thánh địa Mỹ Sơn là độc đáo và hiếm có. Được bố trí theo cụm, từ hai hoặc nhiều tháp. Có tường bao, sân, đường đi nối các tháp với nhau. Mỗi tháp có mỗi chức năng riêng. Tập trung thành từng nhóm, trong đó có đền thờ chính nằm ở giữa, mỗi nhóm đều được bao quanh bởi những bức tường khá dày cũng bằng gạch. Cửa chính của tháp chính phần lớn quay về hướng Đông (hướng về thần linh). Một vài tháp lớn chính có thêm cửa hướng Tây. Trước mặt đền thờ chính (Kalan) là một tháp cổng (Gopura) với cấu trúc nhỏ của hai cửa thông nhau: một cửa về hướng Đông, một cửa hướng vào đền chính, tiếp với tháp cổng thường là căn nhà dài (Mandapa) có mái lợp ngói, bên trong rộng rãi vốn là nơi đón khách hành hương và tiếp nhận lễ vật cũng như cử hành các vũ điệu trong lễ cúng hiến cho thần linh.</p>
+<p><img src="https://file1.dangcongsan.vn/data/0/images/2023/05/11/upload_92/a3.jpg?dpi=150&quality=100&w=780" /></p>
+<p>Được xây dựng liên tục suốt từ thế kỷ IV cho đến giữa thế kỷ XIII, các đền tháp ở Mỹ Sơn là những công trình kiến trúc chính thống của quốc gia và đều do các đời vua trị vì xây dựng, vì vậy có thể nói rằng đền tháp là nơi tập trung những gì tiêu biểu nhất, tinh hoa nhất điển hình cho nền kiến trúc nghệ thuật đương thời với những dạng thể kiến trúc độc đáo. Hầu hết các phong cách kiến trúc đền tháp Chăm đều có mặt ở Mỹ Sơn và chính bản thân các đền tháp ở Mỹ Sơn lại tạo nên những tiêu chí cơ bản cho việc nhận diện phong cách kiến trúc nghệ thuật Chăm.</p>
+<p>Theo thời gian, qua giao tiếp với các nền văn minh khác và sự tiếp nhận chọn lọc của người nghệ sỹ Chămpa, đền tháp tại Mỹ Sơn mang những đường nét kiến trúc theo các thời kỳ khác nhau thể hiện các luồng văn hóa mà họ tiếp nhận. Là khu đền thờ chính của vương quốc trong suốt chín thể kỷ, nên các đền tháp của Mỹ Sơn cũng thể hiện tính thăng trầm của các thời kỳ, những thay đổi trong lịch sử của các vương triều, những chuyển biến trong đời sống văn hóa.</p>
+<p>Không đồ sộ kỳ vĩ như các quần thể, di tích Chămpa khác nhưng Mỹ Sơn vẫn có một chỗ đứng quan trọng trong nên nghệ thuật Đông Nam Á bởi nó là khu di tích duy nhất của cả khu vực có thời gian phát triển liên tục gần 9 thế kỷ, kiến trúc của Mỹ Sơn đã chắt lọc được những tinh hoa của người nghệ sỹ, sự kết hợp giữa kỹ thuật kiến trúc và nghệ thuật trang trí người Chămpa xưa đã tạo cho các đền tháp một vẻ uy nghiêm và kỳ bí./.</p>'
+, 
+CAST(N'2024-06-29T19:23:00.000' AS DateTime), 
+N'http://hoangthanhthanglong.com/store/uploads/2020/09/800-800x500.jpg', 
+1, 
+1);
+
+
+INSERT [dbo].[articles] ([article_id], [title], [textbody], [create_time], [image], [user_id], [cate_id]) VALUES (6, N'Nền Văn Minh Đông Sơn: Từ Trống Đồng Đến Đời Sống Cộng Đồng', 
+N'<p>Từ bao đời nay, trống đồng Đông Sơn tiêu biểu cho nền Văn hóa Đông Sơn và nền văn minh Sông Hồng của người Việt cổ thời kỳ Hùng Vương dựng nước Văn Lang đã trở thành biểu tượng thiêng liêng của nền văn hoá dân tộc Việt Nam. Hình ảnh trống đồng không chỉ là bảo vật quý báu của văn hoá Việt Nam mà còn là điểm hội tụ hồn thiêng sông núi được hình thành từ thời Hùng Vương dựng nước và được tích tụ tinh hoa dân tộc trong suốt tiến trình lịch sử dựng nước và giữ nước của dân tộc Việt Nam từ thời đại các Vua Hùng đến thời đại Hồ Chí Minh quang vinh. Những chiếc trống đồng Đông Sơn được phát hiện trên khắp lãnh thổ của nước Việt Nam đã chứng minh hùng hồn điều đó. Trong suốt hàng nghìn năm dựng nước và giữ nước, chiếc trống đồng đã là văn vật tượng trưng cho tinh hoa văn hoá cũng như ý chí quật cường của dân tộc ta. Trong những nghi lễ trang nghiêm cũng như dịp hội hè vui vẻ, tiếng trống đồng trầm hùng vang vọng tạo ra một không khí uy nghi, làm tăng lòng tự hào dân tộc và làm cho sứ thần của nhà Nguyên là Trần Phu khi đặt chân đến đất Thăng Long, nghe thấy tiếng trống đồng:
+" Kim qua ảnh lý đan tâm khổ; Đồng cổ thanh trung bạch phát sinh" ( Sợ run khi thấy gươm lòa sáng; Tóc bạc vì nghe tiếng trống đồng).</p>
+<p>Quê hương của trống đồng Đông Sơn là vùng Đất Tổ trung du Phú Thọ và các tỉnh vùng Bắc Bộ và Bắc Trung Bộ Việt Nam. Trống đồng Đông Sơn đã tồn tại trong khoảng thời gian từ thế kỷ thứ 7 trước Công nguyên đến thế kỷ 6 sau Công Nguyên. Nó là sản phẩm đầy trí tuệ của người Việt cổ. Tổ tiên ta đã vượt lên những khắc nghiệt của thiên nhiên bằng sự dũng cảm, thông minh và sáng tạo hiếm có, đã tạo nên kỹ thuật luyện kim đồng thau mang đậm yếu tố bản địa của người Việt, tạo nên nền văn hóa đồng thau vào loại bậc nhất ở Đông Nam châu Á. Những chiếc trống đồng Đông sơn chính là sản phẩm của nền văn minh nông nghiệp trồng lúa nước phát triển rực rỡ và toả sáng trên lưu vực của sông Hồng- Con sông Cái của Đất Mẹ Việt Nam- Nơi khai sinh ra dân tộc và đất nước Việt Nam hôm nay.</p>
+<p><img src="http://svhttdl.phutho.gov.vn/images/tho%20cung%20vua%20hung/trongdongdongson.jpg" /></p>
+<p>Trống đồng Việt Nam có nhiều loại hình, nhưng tất cả đều khởi nguồn từ trống Đông Sơn là trống loại I Hê- Ghơ theo sự phân loại của nhà khảo cổ học người Đức. Trống được ra đời từ nền văn hoá Đông Sơn gắn liền với thời kỳ các Vua Hùng dựng nước Văn Lang mà địa bàn Phú Thọ là trung tâm của nền Văn hoá Đông Sơn- Văn minh sông Hồng- Đỉnh cao của sự hoàn thiện kỹ thuật chế tạo là trống đồng Đền Hùng có kích thước trống loại I lớn nhất từ trước đến nay được phát hiện năm 1990 tại Đồi Khuôn Muồi- Một làng cổ ngay sát chân núi Nghĩa Lĩnh- Nơi có Đền thờ các Vua Hùng đã có công dựng nước. Điều đó chứng minh: Trống đồng Đền Hùng là vật linh thiêng đã được nhà nước Văn Lang dùng làm linh vật mỗi khi tế lễ, hội hè tại khu di tích lịch sử Đền Hùng. Cùng với nhiều chiếc trống đồng loại I khác đã được tìm thấy trên dải đất Việt Nam, đó là những tư liệu vô cùng quý báu chứng minh nguồn gốc ra đời và đã có vị trí linh thiêng trong đời sống tâm linh của người Việt. Trống đồng không chỉ là vật linh mà thông qua đó chúng ta đã được sáng tỏ nhiều vấn đề khoa học mà trống đồng là thông điệp làm nên biểu tượng tập trung nhất những thành tựu trong sinh hoạt kinh tế, văn hóa, xã hội và quyền uy của một nhà nước được xác lập đầu tiên trên đất nước ta - Nhà Nước Hùng Vương. Trống đồng và những hình khắc họa trên trống đã giúp chúng ta ngày nay hình dung được đôi nét về cuộc sống của người Việt cổ ở thời xa xưa ấy. Hoa văn trên trống đồng có nhiều loại, kiểu bố trí hợp lý trên các phần mặt, tang và thân trống. Nó được các nhà nghiên cứu tìm hiểu, phân tích để làm cơ sở khoa học trong phân loại trống và khắc họa những nét sinh hoạt kinh tế, xã hội, văn hóa Đông Sơn thời bấy giờ. </p>
+<p>Trống đồng không chỉ có chức năng nhạc khí mà còn có những chức năng khác như làm biểu tượng cho quyền lực, tôn giáo... Trống được dùng trong các nghi lễ tôn giáo, trong lễ hội, và trong chiến đấu chống giặc ngoại xâm, khi người thủ lĩnh bộ lạc kêu gọi mọi người từ khắp nơi tụ về để cùng chiến đấu. Trống thường thuộc về những người thủ lĩnh và là biểu tượng của quyền lực. Người thủ lĩnh có quyền lực càng lớn thì trống càng to và đẹp. Trống đồng cũng được coi là một tài sản quí, và được làm đồ tuỳ táng khi người chủ qua đời.</p>
+<p>Trống đồng Đông Sơn là sản phẩm của nền văn minh nông nghiệp phát triển, là một hiện vật vô cùng quý báu, một trong những niềm tự hào sâu sắc của văn hoá Việt Nam. Ngày nay, hàng trăm chiếc trống đồng được phát hiện và lưu giữ và trưng bày trang trọng ở các bảo tàng quốc gia và các địa phương, vùng đất Thanh Sơn miền tây của tỉnh Phú Thọ là nơi duy nhất tại Việt Nam vẫn còn ngày hội Trống đồng của dân tộc Mường với lễ hội "Đâm Đuống" và "Chàm thau". Đây cũng là một trong số những vùng địa linh của tỉnh Phú Thọ đã phát hiện được nhiều trống đồng trong lòng đất nhất. Chính vì lý do đó mà tỉnh Phú Thọ đã khôi phục một nghi thức linh thiêng là đánh trống đồng trong ngày Giỗ Tổ Hùng Vương - Lễ hội Đền Hùng ngày 10 tháng 3 Âm lịch hàng năm để phục vụ đồng bào trong nước và du khách quốc tế về tham dự các hoạt động trong ngày lễ hội.</p>
+<p>Đây là hoạt động thể hiện tấm lòng thành kính và tôn vinh các giá trị văn hoá, thông qua đó, tích cực đẩy mạnh hoạt động bảo tồn và phát huy giá trị của di sản văn hoá nói chung và biểu tượng trống đồng di sản văn hoá truyền thống tiêu biểu của dân tộc Việt Nam nói riêng. Góp phần tăng cường sự gắn bó, đoàn kết của cộng đồng người Việt Nam nhằm khơi dậy lòng tự hào truyền thống đấu tranh dựng nước và giữ nước của dân tộc Việt Nam thiết thực góp phần giáo dục đạo lý "Uống nước nhớ nguồn"; " Ăn quả nhớ người trồng cây" cho các thế hệ tiếp bước truyền thống vẻ vang của cha ông. Thực hiện lời căn dặn của Bác Hồ kính yêu khi Người về thăm viếng Đền Hùng và các Vua Hùng: "...Các Vua Hùng đã có công dựng nước, Bác cháu ta phải cùng nhau giữ lấy nước...". Cùng nhau đoàn kết, chung sức, chung lòng xây dựng một nước Việt Nam giàu mạnh vững bước tiến lên con đường XHCN vì mục tiêu: Dân giàu, nước mạnh, công bằng, dân chủ, văn minh sánh vai với các cường quốc trên thế giới. Từ Đền Hùng, tiếng trống đồng Đông Sơn sẽ được âm vang, vọng xa đến mọi miền đất nước. Từ Đền Hùng, tiếng trống đồng Đông Sơn sẽ được vang ngân trong lòng bè bạn quốc tế trên khắp năm châu, bốn biển. Từ Đền Hùng tiếng trống đồng âm vang như khẳng định những giá trị về truyền thống, đạo lý nhân văn sâu sắc của dân tộc Việt Nam trong suốt chiều dài lịch sử dựng nước và giữ nước với bao biến cố, thăng trầm vẫn hiên ngang đứng vững và tự hào phát triển đi lên cùng nhân loại./.</p>
+', 
+CAST(N'2024-06-29T19:23:00.000' AS DateTime), 
+N'http://hoangthanhthanglong.com/store/uploads/2020/09/800-800x500.jpg', 
+1, 
+1);
+
+
+
+INSERT [dbo].[articles] ([article_id], [title], [textbody], [create_time], [image], [user_id], [cate_id]) VALUES (7, N'Cách Mạng Tháng Tám: Bước Ngoặt Lịch Sử Của Dân Tộc', 
+N'<p>Đánh giá ý nghĩa lịch sử của thắng lợi Cách mạng Tháng Tám, Chủ tịch Hồ Chí Minh viết: “Chẳng những giai cấp lao động và nhân dân Việt Nam ta có thể tự hào mà giai cấp lao động và những dân tộc bị áp bức nơi khác cũng có thể tự hào rằng: Lần này là lần đầu tiên trong lịch sử cách mạng của các dân tộc thuộc địa và nửa thuộc địa, một Đảng mới 15 tuổi đã lãnh đạo cách mạng thành công, đã nắm chính quyền toàn quốc”.</p>
+<p><img src="http://congdoankontum.vn/Uploads/files/images1053650_mitting.jpg" /></p>
+<p>Liên tiếp giành thắng lợi trên chiến trường châu Âu, giải phóng hàng loạt nước và tiến thẳng vào sào huyệt của phát-xít Đức ở Béc-lin. Ngày 8-5-1945, phát-xít Đức đầu hàng vô điều kiện. Ngày 8-8-1945, Liên Xô tuyên chiến với phát-xít Nhật, đẩy quân phiệt Nhật vào tình thế thất bại. Ngày 13-8-1945, Hội nghị toàn quốc của Đảng họp ở Tân Trào, nhận định thời cơ khởi nghĩa giành chính quyền đã tới, những điều kiện khởi nghĩa ở Đông Dương đã chín muồi. Ủy ban khởi nghĩa gửi quân lệnh số 1 cho đồng bào và cho chiến sĩ cả nước ngay trong đêm ấy.</p>
+<p>Ngày 16-8-1945, đại hội họp ở Tân Trào đã thông qua “10 chính sách lớn của Việt Minh”, thông qua “Lệnh tổng khởi nghĩa”, quyết định Quốc kỳ nền đỏ, sao vàng, chọn bài Tiến quân ca làm Quốc ca và bầu ra Ủy ban Dân tộc giải phóng Trung ương, tức Chính phủ lâm thời do Hồ Chí Minh làm Chủ tịch. Chủ tịch Hồ Chí Minh đã ra lời kêu gọi: “Giờ quyết định cho vận mệnh dân tộc ta đã đến. Toàn thể đồng bào ta hãy đứng dậy đem sức ta mà giải phóng cho ta”. Dưới sự lãnh đạo của Đảng, hơn 20 triệu nhân dân ta từ Bắc đến Nam đã tiến hành cuộc Tổng khởi nghĩa Cách mạng Tháng Tám thành công.</p>
+<p>Ngày 17-8, ở Hà Nội, tổng hội viên chức chính quyền bù nhìn tổ chức một cuộc mít-tinh lớn tại Quảng trường Nhà hát thành phố, có hàng vạn người tham gia để ủng hộ chính phủ bù nhìn Trần Trọng Kim. Trong mít-tinh này, dưới sự lãnh đạo của Xứ ủy Bắc Kỳ và Thành ủy Hà Nội, quần chúng cách mạng đã giương cao lá cờ đỏ sao vàng, chiếm lấy diễn đàn cuộc mít-tinh, cán bộ Việt Minh đã diễn thuyết báo tin cho đồng bào biết quân phiệt Nhật đã đầu hàng và giới thiệu chủ trương đường lối cứu nước của Việt Minh, kêu gọi nhân dân đánh đổ chính quyền bù nhìn thân Nhật. Cuộc mít-tinh đã biến thành cuộc biểu tình, tuần hành thị uy, bắt đầu từ Quảng trường Nhà hát thành phố và lan khắp nơi trên phố phường Hà Nội. Cả Hà Nội tưng bừng khí thế sục sôi khởi nghĩa.</p>
+<p>Sáng 19-8, theo lời kêu gọi của Việt Minh, cả Hà Nội vùng dậy dưới rừng cờ đỏ sao vàng. Dưới sự lãnh đạo của Đảng, chỉ trong vòng 15 ngày (từ ngày 14 đến ngày 28-8-1945), cuộc khởi nghĩa giành chính quyền đã nổ ra và giành thắng lợi khắp cả nước. Quyền thống trị, áp bức của bọn đế quốc (Pháp, Nhật) được xây dựng suốt gần một trăm năm và chế độ quân chủ chuyên chế phản tiến bộ tồn tại hàng nghìn năm đã bị nhân dân ta lật đổ hoàn toàn. Lần đầu tiên, chính quyền cả nước thực sự thuộc về nhân dân.</p>
+<p>Chiều 30-8-1945, ở Ngọ Môn, hàng vạn nhân dân cố đô Huế trong màu cờ đỏ sao vàng đã chứng kiến Bảo Đại - ông vua cuối cùng của chế độ phong kiến Việt Nam, đọc lời thoái vị và trao ấn, kiếm cho cách mạng. Đại diện Chính phủ lâm thời Việt Nam dân chủ cộng hòa tuyên bố xóa bỏ chế độ quân chủ ở Việt Nam.</p>
+<p>Ngày 2/9/1945, tại Quảng trường Ba Đình (Hà Nội) lịnh sử, trước cuộc mít tinh của gần một triệu đồng bào, Chủ tịch Hồ Chí Minh thay mặt Chính phủ Lâm thời trịnh trọng đọc bản Tuyên ngôn Độc lập, tuyên bố trước quốc dân và thế giới: Nước Việt Nam Dân chủ Cộng hòa ra đời (nay là Cộng hòa xã hội chủ nghĩa Việt Nam). Từ đó, ngày 2/9 là Ngày Quốc khánh của nước ta.</p>
+<p>Cách mạng Tháng Tám thành công là kết tinh truyền thống đấu tranh kiên cường, bất khuất của dân tộc ta có lịch sử hàng nghìn năm chống xâm lược, là kết quả của 80 năm chống ách thống trị thực dân, trực tiếp là 15 năm đấu tranh của giai cấp công nhân và nhân dân Việt Nam dưới sự lãnh đạo của Đảng Cộng sản Việt Nam- Đảng do Chủ tịch Hồ Chí Minh sáng lập và rèn luyện. </p>
+<p>Thắng lợi của Cách mạng Tháng Tám và sự ra đời của Nhà nước Việt Nam Dân chủ Cộng hòa đánh dấu bước ngoặt vĩ đại trong lịch sử dân tộc. Nước ta từ một nước thuộc địa và nửa phong kiến, trở thành một nước độc lập, tự do, phát triển theo con đường xã hội chủ nghĩa, có quan hệ quốc tế rộng rãi, có vị thế ngày càng quan trọng trong khu vực và trên thế giới. Nhân dân ta từ thân phận nô lệ trở thành người làm chủ đất nước, làm chủ xã hội. Đảng Cộng sản Việt Nam từ một Đảng hoạt động bí mật trở thành Đảng cầm quyền. Đánh giá ý nghĩa lịch sử của thắng lợi Cách mạng Tháng Tám, Chủ tịch Hồ Chí Minh viết: "Chẳng những giai cấp lao động và nhân dân Việt Nam ta có thể tự hào, mà giai cấp lao động và những dân tộc bị áp bức nơi khác cũng có thể tự hào rằng: Lần này là lần đầu tiên trong lịch sử cách mạng của các dân tộc thuộc địa và nửa thuộc địa, một Đảng mới 15 tuổi đã lãnh đạo cách mạng thành công, đã nắm chính quyền toàn quốc".</p>
+<p>Tinh thần quật khởi và những bài học lịch sử vô giá của Cách mạng Tháng Tám trở thành động lực tinh thần to lớn, thôi thúc toàn dân tộc ta đoàn kết một lòng, dưới sự lãnh đạo của Đảng và Chủ tịch Hồ Chí Minh, tiến hành các cuộc kháng chiến trường kỳ, gian khổ trong suốt 30 năm, đánh thắng các thế lực ngoại xâm, hoàn thành cách mạng dân tộc dân chủ nhân dân, thực hiện thống nhất tổ quốc, đưa cả nước đi lên chủ nghĩa xã hội.</p>
+<p>Sau khi thống nhất đất nước, tinh thần và ý nghĩa quật cường cùng những bài học lớn từ Cách mạng Tháng Tám tiếp tục soi đường, cổ vũ toàn Đảng, toàn dân, toàn quân ta vượt qua muôn vàn khó khăn thử thách, đạt được những thành tựu to lớn trong công cuộc đổi mới đất nước hơn 30 năm qua, tạo nên những biến đổi to lớn, sâu sắc về kinh tế-xã hội, đưa nước ta bước vào thời kỳ đẩy mạnh CNH, HĐH.</p>
+<p>Kỷ niệm 73 năm Cách mạng Tháng Tám thắng lợi, toàn Đảng, toàn dân, toàn quân, toàn dân tộc Việt Nam càng tiếp tục nỗ lực học tập, nghiên cứu, thấm nhuần và thực hiện đường lối đại đoàn kết, bài học lịch sử “Việc cương thường muôn thuở là ở dân tâm”; thực hiện tốt hơn nữa, cao hơn nữa bài học nắm vững quy luật lòng dân của Chủ tịch Hồ Chí Minh, nhằm khơi dậy tinh thần tự hào, tự tôn dân tộc, xác định chủ nghĩa yêu nước chân chính là động lực vĩ đại trong tiến trình thực hiện thắng lợi công cuộc đổi mới.</p>
+', 
+CAST(N'2024-06-29T19:23:00.000' AS DateTime), 
+N'http://hoangthanhthanglong.com/store/uploads/2020/09/800-800x500.jpg', 
+1, 
+1);
+
+
+select * from [articles]
+DELETE FROM [dbo].[articles]
+WHERE [article_id] = (SELECT MAX([article_id]) FROM [dbo].[articles]);
+
+
+SET IDENTITY_INSERT [dbo].[articles] OFF
+SET IDENTITY_INSERT [dbo].[articles] on
+GO
+SET IDENTITY_INSERT [dbo].[categories] ON 
+
+
+INSERT [dbo].[categories] ([cate_id], [cate_name]) VALUES (1, N'Lịch sử khoa học và công nghệ')
+INSERT [dbo].[categories] ([cate_id], [cate_name]) VALUES (2, N'Lịch sử xã hội và đời sống')
+INSERT [dbo].[categories] ([cate_id], [cate_name]) VALUES (3, N'Lịch sử tôn giáo và triết học')
+INSERT [dbo].[categories] ([cate_id], [cate_name]) VALUES (4, N'Lịch sử quân sự')
+INSERT [dbo].[categories] ([cate_id], [cate_name]) VALUES (5, N'Lịch sử ngoại giao')
+INSERT [dbo].[categories] ([cate_id], [cate_name]) VALUES (6, N'Tiểu sử các nhân vật lịch sử nổi tiếng')
+INSERT [dbo].[categories] ([cate_id], [cate_name]) VALUES (7, N'Giới thiệu các di tích lịch sử văn hóa')
+INSERT [dbo].[categories] ([cate_id], [cate_name]) VALUES (8, N'Cập nhật thông tin mới nhất về các hoạt động nghiên cứu, khai quật khảo cổ học')
+INSERT [dbo].[categories] ([cate_id], [cate_name]) VALUES (9, N'Lịch sử chính trị')
+INSERT [dbo].[categories] ([cate_id], [cate_name]) VALUES (10, N'Lịch sử kinh tế')
+INSERT [dbo].[categories] ([cate_id], [cate_name]) VALUES (11, N'Lịch sử văn hóa')
+
+select * from [categories]
+delete from [categories]
+
+SET IDENTITY_INSERT [dbo].[categories] OFF
+GO
+SET IDENTITY_INSERT [dbo].[comments] ON 
+
+INSERT [dbo].[comments] ([cmt_id], [user_id], [article_id], [cmt_cotnent], [create_time]) VALUES (1, 1, 2, N'Bài viết thật hữu ích!', CAST(N'2024-06-17T19:23:00.000' AS DateTime))
+INSERT [dbo].[comments] ([cmt_id], [user_id], [article_id], [cmt_cotnent], [create_time]) VALUES (2, 1, 1, N'Bài viết thật hữu ích với mọi người!', CAST(N'2024-06-17T19:23:00.000' AS DateTime))
+INSERT [dbo].[comments] ([cmt_id], [user_id], [article_id], [cmt_cotnent], [create_time]) VALUES (3, 1, 1, N'Thật tuyệt!', CAST(N'2024-06-17T19:23:00.000' AS DateTime))
+SET IDENTITY_INSERT [dbo].[comments] OFF
+GO
+SET IDENTITY_INSERT [dbo].[users] ON 
+
+INSERT [dbo].[users] ([user_id], [usename], [email], [password], [full_name], [avatar], [sefl_des]) VALUES (2, N'admin', N'admin@wizard.com', N'12345', N'Adminstrator', NULL, NULL)
+SET IDENTITY_INSERT [dbo].[users] OFF
+GO
+
+
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+create proc [dbo].[accountlogin](
+	@email nvarchar(256),
+	@password nvarchar(MAX))
+as 
+begin
+	declare @count int
+	declare @res bit
+	select @count = count(*) from users where email = @email and password = @password
+	if @count >= 1
+		set @res = 1
+	else 
+		set @res = 0
+	select @res
+end
+GO
+/****** Object:  StoredProcedure [dbo].[countRowArticles]    Script Date: 5/31/2023 10:48:08 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+create proc [dbo].[countRowArticles]
+as
+begin
+	SELECT COUNT(*) FROM articles
+	end
+GO
+/****** Object:  StoredProcedure [dbo].[countRowCategories]    Script Date: 5/31/2023 10:48:08 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+create proc [dbo].[countRowCategories]
+as
+begin
+	SELECT COUNT(*) FROM categories
+	end
+GO
+/****** Object:  StoredProcedure [dbo].[countRowCmt]    Script Date: 5/31/2023 10:48:08 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+create proc [dbo].[countRowCmt]
+as
+begin
+	SELECT COUNT(*) FROM comments
+	end
+GO
+/****** Object:  StoredProcedure [dbo].[countRowUsers]    Script Date: 5/31/2023 10:48:08 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+create proc [dbo].[countRowUsers]
+as
+begin
+	SELECT COUNT(*) FROM users
+	end
+GO
+/****** Object:  StoredProcedure [dbo].[delete_article]    Script Date: 5/31/2023 10:48:08 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE PROCEDURE [dbo].[delete_article](@art_id INT)
+AS
+   DELETE FROM articles
+   WHERE article_id = @art_id
+GO
+/****** Object:  StoredProcedure [dbo].[delete_cate]    Script Date: 5/31/2023 10:48:08 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE PROCEDURE [dbo].[delete_cate](@cateid INT)
+AS
+   DELETE FROM categories
+   WHERE cate_id = @cateid
+GO
+/****** Object:  StoredProcedure [dbo].[delete_cmt]    Script Date: 5/31/2023 10:48:08 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE PROCEDURE [dbo].[delete_cmt](@cmt_id INT)
+AS
+   DELETE FROM comments
+   WHERE cmt_id = @cmt_id
+GO
+/****** Object:  StoredProcedure [dbo].[delete_user]    Script Date: 5/31/2023 10:48:08 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE PROCEDURE [dbo].[delete_user](@userid INT)
+AS
+   DELETE FROM users
+   WHERE user_id = @userid
+GO
+/****** Object:  StoredProcedure [dbo].[findArticles]    Script Date: 5/31/2023 10:48:08 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+create proc [dbo].[findArticles](
+	@title nvarchar(max)
+)
+as
+begin
+	select * from articles where title like '%@title%'
+	end
+GO
+/****** Object:  StoredProcedure [dbo].[GetAll_Articles]    Script Date: 5/31/2023 10:48:08 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+create proc [dbo].[GetAll_Articles]
+as
+select * from articles
+GO
+/****** Object:  StoredProcedure [dbo].[GetAll_Categories]    Script Date: 5/31/2023 10:48:08 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE proc [dbo].[GetAll_Categories]
+as 
+select * from categories
+GO
+/****** Object:  StoredProcedure [dbo].[GetAll_Comments]    Script Date: 5/31/2023 10:48:08 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+create proc [dbo].[GetAll_Comments]
+as 
+select * from comments
+GO
+/****** Object:  StoredProcedure [dbo].[GetAll_Users]    Script Date: 5/31/2023 10:48:08 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+create proc [dbo].[GetAll_Users]
+as 
+select * from users
+GO
+/****** Object:  StoredProcedure [dbo].[getArtById]    Script Date: 5/31/2023 10:48:08 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+create proc [dbo].[getArtById](
+	@id int
+)
+as
+begin
+	select * from articles where article_id = @id
+	end
+GO
+/****** Object:  StoredProcedure [dbo].[getCateById]    Script Date: 5/31/2023 10:48:08 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+create proc [dbo].[getCateById](
+	@var_id int
+)
+as
+begin
+	select * from categories where cate_id = @var_id
+	end
+GO
+/****** Object:  StoredProcedure [dbo].[insert_article]    Script Date: 5/31/2023 10:48:08 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE proc [dbo].[insert_article](
+	@title nvarchar(max),
+	@textbody nvarchar(max),
+	@image nvarchar(max),
+	@user_id int,
+	@cate_id int
+)
+as
+begin
+	insert into articles(title,textbody,create_time,image,user_id,cate_id) values(@title,@textbody,GETDATE(),@image, @user_id,@cate_id)
+end
+GO
+/****** Object:  StoredProcedure [dbo].[insert_category]    Script Date: 5/31/2023 10:48:08 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+create proc [dbo].[insert_category](
+	@name nvarchar(MAX)
+)
+as
+begin
+	insert into categories(cate_name) values(@name)
+end
+GO
+/****** Object:  StoredProcedure [dbo].[spAccountCheckExists]    Script Date: 5/31/2023 10:48:08 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE proc [dbo].[spAccountCheckExists](
+	@username nvarchar(max),
+	@email nvarchar(256))
+as 
+BEGIN
+	DECLARE @count INT = 0
+	select @count = COUNT(*) from accounts 
+		WHERE email LIKE @email or usename LIKE @username
+	select @count
+end
+GO
+/****** Object:  StoredProcedure [dbo].[spAccountLogin]    Script Date: 5/31/2023 10:48:08 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE proc [dbo].[spAccountLogin](
+	@email nvarchar(256),
+	@password nvarchar(MAX))
+as 
+begin
+	select * from accounts where email LIKE @email and password = @password
+end
+GO
+/****** Object:  StoredProcedure [dbo].[spAccountRegister]    Script Date: 5/31/2023 10:48:08 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE proc [dbo].[spAccountRegister](
+	@username NVARCHAR(MAX),
+	@email nvarchar(256),
+	@password nvarchar(MAX),
+	@full_name nvarchar(MAX))
+as 
+begin
+	INSERT INTO accounts (usename, email, password, full_name, avatar, sefl_des)
+	VALUES (@username, @email, @password, @full_name, N'', N'G')
+	
+	SELECT * FROM accounts WHERE user_id = SCOPE_IDENTITY()
+end
+GO
+/****** Object:  StoredProcedure [dbo].[update_article]    Script Date: 5/31/2023 10:48:08 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE proc [dbo].[update_article](
+	@article_id int,
+	@title nvarchar(max),
+	@textbody nvarchar(max),
+	@image nvarchar(max),
+	@cateid int
+)
+as
+BEGIN
+	SET NOCOUNT ON
+	UPDATE [articles]
+	SET    [title] = @title, [textbody] = @textbody, [image] = @image, [cate_id] = @cateid
+	WHERE  [article_id] = @article_id
+	
+	SELECT [article_id], [title], [textbody], [create_time], [image], [user_id], [cate_id]
+	FROM   [articles]
+	WHERE  [article_id] = @article_id	
+
+end
+GO
+/****** Object:  StoredProcedure [dbo].[update_article1]    Script Date: 5/31/2023 10:48:08 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE proc [dbo].[update_article1](
+	@article_id int,
+	@title nvarchar(max),
+	@textbody nvarchar(max),
+	@image nvarchar(max),
+	@cateid int
+)
+as
+BEGIN
+	SET NOCOUNT ON
+	UPDATE [articles]
+	SET    [title] = @title, [textbody] = @textbody, [image] = @image, [cate_id] = @cateid
+	WHERE  [article_id] = @article_id
+	
+	SELECT [article_id], [title], [textbody], [create_time], [image], [user_id], [cate_id]
+	FROM   [articles]
+	WHERE  [article_id] = @article_id	
+
+end
+GO
+/****** Object:  StoredProcedure [dbo].[update_cate]    Script Date: 5/31/2023 10:48:08 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+create proc [dbo].[update_cate](
+	@var_id int,
+	@var_name nvarchar(max)
+)
+as
+begin
+	UPDATE categories
+	SET cate_name = @var_name
+	WHERE cate_id = @var_id;
+end
+GO
+USE [master]
+GO
+ALTER DATABASE [wizard_magazine] SET  READ_WRITE 
+GO
+
+
+USE wizard_magazine;
+GO
+EXEC sp_helptext 'GetALL_Articles';
+
+select * from accounts
+
+
+ALTER TABLE [dbo].[articles]
+ADD [view_count] INT NOT NULL DEFAULT 0;
+
+select * from [articles]

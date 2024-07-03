@@ -1,0 +1,68 @@
+﻿@model IEnumerable<DataAccess.EntityFramework.article>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout2.cshtml";
+}
+
+
+
+<div class="mc-post">
+    <link rel="stylesheet" href="~/Assets/admin/css/iconchat.css">
+    <div class="list-normal-post">
+        @foreach (var item in Model)
+        {
+
+            <div class="mp">
+                <div class="mp-img">
+                    <img src="@Html.DisplayFor(modelItem => item.image)" alt="">
+                    <div class="post-wish1">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                </div>
+                <div class="mp-title">
+                    <div style="position: relative; z-index: 10;">
+                        <div class="lp-date">
+                            <div>@(item.create_time.HasValue?item.create_time.Value.ToString("dd") : "")</div>
+                            <span>@(item.create_time.HasValue?item.create_time.Value.ToString("MM") : "")</span>
+                        </div>
+                        <div class="mp-nav">
+                            <span>by</span>
+                            <span>Anh Chung</span>
+                            <span>/</span>
+                            <span>Tin tức mới</span>
+                        </div>
+                    </div>
+                    <div>
+                        <a href="@Url.Action("Detail", "HomePage" , new {id = item.article_id})">
+                            <span>@Html.Raw(item.title)</span>
+                        </a>
+                    </div>
+                    <div class="pretext" style="">
+                        @Html.Raw(item.textbody)
+                    </div>
+                </div>
+            </div>
+
+        }
+    </div>
+
+
+
+</div>
+
+<div id="icon-container">
+    <div class="tooltip">
+        <img src="https://cdn4.iconfinder.com/data/icons/social-media-2097/94/phone-1024.png" alt="Call us" class="chat-icon">
+        <span class="tooltiptext">0942911206</span>
+    </div>
+    <a href="https://www.facebook.com/profile.php?id=61561357455336" target="_blank">
+        <img src="https://tiemtraannhien.vn/wp-content/uploads/2023/04/messenger-icon-free-png.webp" alt="Chat with us on Messenger" class="chat-icon">
+    </a>
+    <df-messenger intent="WELCOME"
+                  chat-title="VietNamHistory-chat"
+                  agent-id="92165762-21bb-4fb9-b0fe-5fb52e689eec"
+                  language-code="en"></df-messenger>
+</div>
+
+<script src="https://www.gstatic.com/dialogflow-console/fast/messenger/bootstrap.js?v=1"></script>
